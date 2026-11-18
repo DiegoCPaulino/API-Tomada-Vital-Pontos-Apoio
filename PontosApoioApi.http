@@ -2,7 +2,7 @@
 
 ###
 # PARTE 1 - CARGA
-# Rodar só com as tabelas recém-criadas: os pontoApoioId 1 a 4 dos recursos dependem disso (CLAUDE.md §6 item 14).
+# Rodar só com as tabelas recém-criadas: os pontoApoioId 1 a 4 dos recursos dependem disso.
 
 # Ponto 1
 POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
