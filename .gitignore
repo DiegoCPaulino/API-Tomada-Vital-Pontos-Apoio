@@ -480,10 +480,3 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-
-# --- Material de apoio - NAO VAI PARA O GITHUB ---
-CLAUDE.md
-PLANO.md
-docs/
-referencias/
-.claude/
