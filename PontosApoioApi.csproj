@@ -22,11 +22,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- referencias/ guarda material da aula e da CP2, com os próprios .cs e .csproj; sem isso o SDK Web compila os dois juntos -->
-    <Compile Remove="referencias/**" />
-    <Content Remove="referencias/**" />
-    <None Remove="referencias/**" />
-  </ItemGroup>
-
 </Project>
