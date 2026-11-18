@@ -1,6 +1,232 @@
 @PontosApoioApi_HostAddress = http://localhost:5121
 
-GET {{PontosApoioApi_HostAddress}}/api/PontoApoio/
-Accept: application/json
+###
+# PARTE 1 - CARGA
+# Rodar só com as tabelas recém-criadas: os pontoApoioId 1 a 4 dos recursos dependem disso (CLAUDE.md §6 item 14).
+
+# Ponto 1
+POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
+Content-Type: application/json
+
+{ "nome": "UBS Jardim das Flores", "endereco": "Rua das Flores, 120", "bairro": "Parque Pinheiros", "telefone": "(11) 4000-1001", "capacidade": 12, "ativo": true }
+
+###
+
+# Ponto 2
+POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
+Content-Type: application/json
+
+{ "nome": "Escola Municipal Monteiro", "endereco": "Avenida Monteiro Lobato, 450", "bairro": "Jardim Record", "telefone": "(11) 4000-1002", "capacidade": 30, "ativo": true }
+
+###
+
+# Ponto 3
+POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
+Content-Type: application/json
+
+{ "nome": "Centro Comunitário Vila Nova", "endereco": "Rua Vila Nova, 85", "bairro": "Vila Nova", "telefone": "(11) 4000-1003", "capacidade": 8, "ativo": true }
+
+###
+
+# Ponto 4
+POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
+Content-Type: application/json
+
+{ "nome": "Posto de Bombeiros 3", "endereco": "Estrada do Campo Limpo, 3000", "bairro": "Campo Limpo", "telefone": "(11) 4000-1004", "capacidade": 4, "ativo": true }
+
+###
+
+# Recurso 1 - gerador da UBS (pontoApoioId 1)
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "GERADOR", "quantidade": 1, "autonomiaHoras": 24, "pontoApoioId": 1 }
+
+###
+
+# Recurso 2 - segundo recurso da UBS (pontoApoioId 1)
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "CILINDRO_O2_RESERVA", "quantidade": 4, "autonomiaHoras": 10, "pontoApoioId": 1 }
+
+###
+
+# Recurso 3 - gerador da Escola (pontoApoioId 2)
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "GERADOR", "quantidade": 1, "autonomiaHoras": 12, "pontoApoioId": 2 }
+
+###
+
+# Recurso 4 - nobreak do Centro Comunitário (pontoApoioId 3)
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "NOBREAK", "quantidade": 2, "autonomiaHoras": 6, "pontoApoioId": 3 }
+
+###
+
+# Recurso 5 - cilindros do Posto de Bombeiros (pontoApoioId 4)
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "CILINDRO_O2_RESERVA", "quantidade": 6, "autonomiaHoras": 10, "pontoApoioId": 4 }
+
+###
+# PARTE 2 - TESTES
+
+# 1 - esperado: 200, 4 pontos
+GET {{PontosApoioApi_HostAddress}}/api/PontoApoio
+
+###
+
+# 2 - esperado: 200, UBS Jardim das Flores
+GET {{PontosApoioApi_HostAddress}}/api/PontoApoio/1
+
+###
+
+# 3 - esperado: 404 {"mensagem":"Ponto de apoio não encontrado."}
+GET {{PontosApoioApi_HostAddress}}/api/PontoApoio/999
+
+###
+
+# 4 - esperado: 400 {"mensagem":"A capacidade deve ser maior que zero."}
+POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
+Content-Type: application/json
+
+{ "nome": "Ponto de teste", "endereco": "Rua Teste, 1", "bairro": "Bairro Teste", "telefone": "(11) 4000-0000", "capacidade": 0, "ativo": true }
+
+###
+
+# 5 - esperado: 400 {"mensagem":"O nome do ponto de apoio é obrigatório."}
+POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
+Content-Type: application/json
+
+{ "nome": "   ", "endereco": "Rua Teste, 1", "bairro": "Bairro Teste", "telefone": "(11) 4000-0000", "capacidade": 10, "ativo": true }
+
+###
+
+# 6 - esperado: 400 ProblemDetails automático (capacidade com tipo errado)
+POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
+Content-Type: application/json
+
+{ "nome": "Ponto de teste", "endereco": "Rua Teste, 1", "bairro": "Bairro Teste", "telefone": "(11) 4000-0000", "capacidade": "abc", "ativo": true }
+
+###
+
+# 7 - esperado: 201, id 5, cabeçalho Location
+POST {{PontosApoioApi_HostAddress}}/api/PontoApoio
+Content-Type: application/json
+
+{ "nome": "Ponto de teste", "endereco": "Rua Teste, 1", "bairro": "Bairro Teste", "telefone": "(11) 4000-0000", "capacidade": 10, "ativo": true }
+
+###
+
+# 8 - esperado: 204
+PUT {{PontosApoioApi_HostAddress}}/api/PontoApoio?id=5
+Content-Type: application/json
+
+{ "novaCapacidade": 20 }
+
+###
+
+# 9 - esperado: 200, capacidade 20
+GET {{PontosApoioApi_HostAddress}}/api/PontoApoio/5
+
+###
+
+# 10 - esperado: 400
+PUT {{PontosApoioApi_HostAddress}}/api/PontoApoio?id=5
+Content-Type: application/json
+
+{ "novaCapacidade": -1 }
+
+###
+
+# 11 - esperado: 404
+PUT {{PontosApoioApi_HostAddress}}/api/PontoApoio?id=999
+Content-Type: application/json
+
+{ "novaCapacidade": 3 }
+
+###
+
+# 12 - esperado: 200, 5 recursos
+GET {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+
+###
+
+# 13 - esperado: 404 {"mensagem":"Recurso de energia não encontrado."}
+GET {{PontosApoioApi_HostAddress}}/api/RecursoEnergia/999
+
+###
+
+# 14 - esperado: 400 tipo inválido
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "PILHA", "quantidade": 1, "autonomiaHoras": 10, "pontoApoioId": 1 }
+
+###
+
+# 15 - esperado: 404 ponto não encontrado
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "GERADOR", "quantidade": 1, "autonomiaHoras": 10, "pontoApoioId": 999 }
+
+###
+
+# 16 - esperado: 400
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "GERADOR", "quantidade": 0, "autonomiaHoras": 10, "pontoApoioId": 1 }
+
+###
+
+# 17 - esperado: 201, id 6, NOBREAK no ponto 5
+POST {{PontosApoioApi_HostAddress}}/api/RecursoEnergia
+Content-Type: application/json
+
+{ "tipo": "NOBREAK", "quantidade": 1, "autonomiaHoras": 8, "pontoApoioId": 5 }
+
+###
+
+# 18 - esperado: 204
+PUT {{PontosApoioApi_HostAddress}}/api/RecursoEnergia?id=6
+Content-Type: application/json
+
+{ "novaQuantidade": 3 }
+
+###
+
+# 19 - esperado: 400
+PUT {{PontosApoioApi_HostAddress}}/api/RecursoEnergia?id=6
+Content-Type: application/json
+
+{ "novaQuantidade": 0 }
+
+###
+
+# 20 - esperado: 204 (apaga também o recurso 6, pelo cascade)
+DELETE {{PontosApoioApi_HostAddress}}/api/PontoApoio?id=5
+
+###
+
+# 21 - esperado: 404 (recurso 6 apagado junto pelo cascade)
+GET {{PontosApoioApi_HostAddress}}/api/RecursoEnergia/6
+
+###
+
+# 22 - esperado: 404
+DELETE {{PontosApoioApi_HostAddress}}/api/RecursoEnergia?id=999
+
+###
+
+# 23 - esperado: 404
+DELETE {{PontosApoioApi_HostAddress}}/api/PontoApoio?id=999
 
 ###
