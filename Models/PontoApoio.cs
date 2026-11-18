@@ -16,6 +16,7 @@ public class PontoApoio
     // O Oracle é quem gera o Id (Identity), por isso ele não entra aqui.
     public PontoApoio(string nome, string endereco, string bairro, string telefone, int capacidade, bool ativo)
     {
+        // A validação fica na entidade, e não no controller: é regra do negócio, como o UpdatePrice da aula.
         if (string.IsNullOrWhiteSpace(nome))
             throw new ArgumentException("O nome do ponto de apoio é obrigatório.");
         if (string.IsNullOrWhiteSpace(endereco))

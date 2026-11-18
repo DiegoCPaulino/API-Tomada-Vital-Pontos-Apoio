@@ -15,6 +15,7 @@ public class RecursoEnergia
     // Esta entidade não confere se o ponto existe: ela não tem acesso ao banco. Quem confere é o controller.
     public RecursoEnergia(string tipo, int quantidade, int autonomiaHoras, int pontoApoioId)
     {
+        // A validação fica na entidade, e não no controller: é regra do negócio, como o UpdatePrice da aula.
         ValidarTipo(tipo);
         ValidarQuantidade(quantidade);
         if (autonomiaHoras <= 0)
