@@ -1,0 +1,6 @@
+@PontosApoioApi_HostAddress = http://localhost:5121
+
+GET {{PontosApoioApi_HostAddress}}/api/PontoApoio/
+Accept: application/json
+
+###
