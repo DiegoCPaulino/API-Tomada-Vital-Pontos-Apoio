@@ -211,4 +211,4 @@ Existem dois tipos de erro 400, e os dois saem em JSON:
 
 ## Vídeo
 
-<!-- PREENCHER -->
+Link: [https://youtu.be/J6Lz28eTBvI](https://youtu.be/J6Lz28eTBvI)
